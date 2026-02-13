@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>QR Menu</title>
+<style>
+body{font-family:Arial;max-width:400px;margin:auto;}
+.cart{border:1px solid #ccc;padding:10px;margin-top:10px;}
+</style>
+</head>
+
+<body>
+
+<h2>CHAR KUEY TIAW MALAYA Restaurant Menu</h2>
+Table: <span id="tableNo"></span>
+
+<h2>CHAR KUEY TIAW MENU</h2>
+<!-- CHAR KUEY TIAW KOSONG -->
+<h3>
+<input type="checkbox" class="main-item" data-name="Char Kuey Tiaw Kosong" data-price="7">
+Char Kuey Tiaw Kosong RM7
+<button onclick="dec('Char Kuey Tiaw Kosong')">-</button>
+<span id="qty-Char Kuey Tiaw Kosong">1</span>
+<button onclick="inc('Char Kuey Tiaw Kosong')">+</button>
+</h3>
+
+<input type="checkbox" class="ingredient" data-item="Char Kuey Tiaw Kosong" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="Char Kuey Tiaw Kosong" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="Char Kuey Tiaw Kosong" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- CHAR KUEY TIAW UDANG -->
+<h3>
+<input type="checkbox" class="main-item" data-name="Char Kuey Tiaw Udang" data-price="9">
+Char Kuey Tiaw Udang RM9
+<button onclick="dec('Char Kuey Tiaw Udang')">-</button>
+<span id="qty-Char Kuey Tiaw Udang">1</span>
+<button onclick="inc('Char Kuey Tiaw Udang')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="Char Kuey Tiaw Udang" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="Char Kuey Tiaw Udang" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="Char Kuey Tiaw Udang" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- CHAR KUEY TIAW KERANG -->
+<h3>
+<input type="checkbox" class="main-item" data-name="Char Kuey Tiaw Kerang" data-price="9">
+Char Kuey Tiaw Kerang RM9
+<button onclick="dec('Char Kuey Tiaw Kerang')">-</button>
+<span id="qty-Char Kuey Tiaw Kerang">1</span>
+<button onclick="inc('Char Kuey Tiaw Kerang')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="Char Kuey Tiaw Kerang" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="Char Kuey Tiaw Kerang" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="Char Kuey Tiaw Kerang" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- CKT UDANG SPECIAL -->
+<h3>
+<input type="checkbox" class="main-item" data-name="CKT Udang Special" data-price="13">
+CKT Udang Special RM13
+<button onclick="dec('CKT Udang Special')">-</button>
+<span id="qty-CKT Udang Special">1</span>
+<button onclick="inc('CKT Udang Special')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="CKT Udang Special" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="CKT Udang Special" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="CKT Udang Special" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- CKT KERANG SPECIAL -->
+<h3>
+<input type="checkbox" class="main-item" data-name="CKT Kerang Special" data-price="13">
+CKT Kerang Special RM13
+<button onclick="dec('CKT Kerang Special')">-</button>
+<span id="qty-CKT Kerang Special">1</span>
+<button onclick="inc('CKT Kerang Special')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="CKT Kerang Special" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="CKT Kerang Special" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="CKT Kerang Special" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- CKT UDANG+KERANG+TELUR SPECIAL -->
+<h3>
+<input type="checkbox" class="main-item" data-name="CKT Udang+Kerang+Telur Special" data-price="15">
+CKT Udang+Kerang+Telur Special RM15
+<button onclick="dec('CKT Udang+Kerang+Telur Special')">-</button>
+<span id="qty-CKT Udang+Kerang+Telur Special">1</span>
+<button onclick="inc('CKT Udang+Kerang+Telur Special')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="CKT Udang+Kerang+Telur Special" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="CKT Udang+Kerang+Telur Special" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="CKT Udang+Kerang+Telur Special" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<h2> KUEY TIAW GORENG MENU</h2>
+<!-- KUEY TIAW GORENG KOSONG -->
+<h3>
+<input type="checkbox" class="main-item" data-name="Kuey Tiaw Goreng Kosong" data-price="7">
+Kuey Tiaw Goreng Kosong RM7
+<button onclick="dec('Kuey Tiaw Goreng Kosong')">-</button>
+<span id="qty-Kuey Tiaw Goreng Kosong">1</span>
+<button onclick="inc('Kuey Tiaw Goreng Kosong')">+</button>
+</h3>
+
+<input type="checkbox" class="ingredient" data-item="Kuey Tiaw Goreng Kosong" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="Kuey Tiaw Goreng Kosong" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="Kuey Tiaw Goreng Kosong" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- KUEY TIAW GORENG UDANG -->
+<h3>
+<input type="checkbox" class="main-item" data-name="Kuey Tiaw Goreng Udang" data-price="9">
+Kuey Tiaw Goreng Udang RM9
+<button onclick="dec('Kuey Tiaw Goreng Udang')">-</button>
+<span id="qty-Kuey Tiaw Goreng Udang">1</span>
+<button onclick="inc('Kuey Tiaw Goreng Udang')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="Kuey Tiaw Goreng Udang" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="Kuey Tiaw Goreng Udang" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="Kuey Tiaw Goreng Udang" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- KUEY TIAW GORENG KERANG -->
+<h3>
+<input type="checkbox" class="main-item" data-name="Kuey Tiaw Goreng Kerang" data-price="9">
+Kuey Tiaw Goreng Kerang RM9
+<button onclick="dec('Kuey Tiaw Goreng Kerang')">-</button>
+<span id="qty-Kuey Tiaw Goreng Kerang">1</span>
+<button onclick="inc('Kuey Tiaw Goreng Kerang')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="Kuey Tiaw Goreng Kerang" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="Kuey Tiaw Goreng Kerang" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="Kuey Tiaw Goreng Kerang" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- KTG UDANG SPECIAL -->
+<h3>
+<input type="checkbox" class="main-item" data-name="KTG Udang Special" data-price="13">
+KTG Udang Special RM13
+<button onclick="dec('KTG Udang Special')">-</button>
+<span id="qty-KTG Udang Special">1</span>
+<button onclick="inc('KTG Udang Special')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="KTG Udang Special" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="KTG Udang Special" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="KTG Udang Special" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- KTG KERANG SPECIAL -->
+<h3>
+<input type="checkbox" class="main-item" data-name="KTG Kerang Special" data-price="13">
+KTG Kerang Special RM13
+<button onclick="dec('KTG Kerang Special')">-</button>
+<span id="qty-KTG Kerang Special">1</span>
+<button onclick="inc('KTG Kerang Special')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="KTG Kerang Special" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="KTG Kerang Special" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="KTG Kerang Special" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+
+<!-- KTG UDANG+KERANG+TELUR SPECIAL -->
+<h3>
+<input type="checkbox" class="main-item" data-name="KTG Udang+Kerang+Telur Special" data-price="15">
+KTG Udang+Kerang+Telur Special RM15
+<button onclick="dec('KTG Udang+Kerang+Telur Special')">-</button>
+<span id="qty-KTG Udang+Kerang+Telur Special">1</span>
+<button onclick="inc('KTG Udang+Kerang+Telur Special')">+</button>
+</h3>
+<input type="checkbox" class="ingredient" data-item="KTG Udang+Kerang+Telur Special" data-name="Tauge">Tauge<br>
+<input type="checkbox" class="ingredient" data-item="KTG Udang+Kerang+Telur Special" data-name="Kucai">Kucai<br>
+<input type="checkbox" class="addon-paid" data-item="KTG Udang+Kerang+Telur Special" data-name="Telur Mata" data-price="1.5">
+Telur Mata (+RM1.50)
+
+<hr>
+<h2> MINUMAN</h2>
+<!-- TEH O AIS  -->
+<h3>
+<input type="checkbox" class="main-item" data-name="TEH O AIS" data-price="2">
+TEH O AIS RM2
+<button onclick="dec('TEH O AIS')">-</button>
+<span id="qty-TEH O AIS">1</span>
+<button onclick="inc('TEH O AIS')">+</button>
+</h3>
+
+<hr>
+
+<!-- SIRAP SELASIH  -->
+<h3>
+<input type="checkbox" class="main-item" data-name="SIRAP SELASIH" data-price="2">
+SIRAP SELASIH RM2
+<button onclick="dec('SIRAP SELASIH')">-</button>
+<span id="qty-SIRAP SELASIH">1</span>
+<button onclick="inc('SIRAP SELASIH')">+</button>
+</h3>
+
+<hr>
+
+<!-- TEH BUNGA   -->
+<h3>
+<input type="checkbox" class="main-item" data-name="TEH BUNGA " data-price="2">
+TEH BUNGA  RM2
+<button onclick="dec('TEH BUNGA ')">-</button>
+<span id="qty-TEH BUNGA ">1</span>
+<button onclick="inc('TEH BUNGA ')">+</button>
+</h3>
+
+<hr>
+
+<!-- TEH O AIS LIMAU    -->
+<h3>
+<input type="checkbox" class="main-item" data-name="TEH O AIS LIMAU " data-price="2">
+TEH O AIS LIMAU  RM2
+<button onclick="dec('TEH O AIS LIMAU ')">-</button>
+<span id="qty-TEH O AIS LIMAU ">1</span>
+<button onclick="inc('TEH O AIS LIMAU ')">+</button>
+</h3>
+
+<hr>
+
+<!-- SIRAP LIMAU SELASIH    -->
+<h3>
+<input type="checkbox" class="main-item" data-name="SIRAP LIMAU SELASIH " data-price="2">
+SIRAP LIMAU SELASIH  RM2
+<button onclick="dec('SIRAP LIMAU SELASIH ')">-</button>
+<span id="qty-SIRAP LIMAU SELASIH ">1</span>
+<button onclick="inc('SIRAP LIMAU SELASIH ')">+</button>
+</h3>
+
+<hr>
+
+<!-- AIS LIMAU    -->
+<h3>
+<input type="checkbox" class="main-item" data-name="AIS LIMAU " data-price="2">
+AIS LIMAU  RM2
+<button onclick="dec('AIS LIMAU ')">-</button>
+<span id="qty-AIS LIMAU ">1</span>
+<button onclick="inc('AIS LIMAU ')">+</button>
+</h3>
+
+<hr>
+
+<!-- AIR MINERAL     -->
+<h3>
+<input type="checkbox" class="main-item" data-name="AIR MINERAL " data-price="2">
+AIR MINERAL  RM2
+<button onclick="dec('AIR MINERAL ')">-</button>
+<span id="qty-AIR MINERAL ">1</span>
+<button onclick="inc('AIR MINERAL ')">+</button>
+</h3>
+
+
+
+<button onclick="sendOrder()">Send Order</button>
+
+<div class="cart">
+<h4>Cart</h4>
+<div id="cartItems"></div>
+<b>Total RM <span id="totalPrice">0</span></b>
+</div>
+<script>
+let tableNo = new URLSearchParams(window.location.search).get("table") || 2;
+document.getElementById("tableNo").innerText = tableNo;
+
+function inc(item){
+  let q = document.getElementById("qty-" + item);
+  q.innerText = parseInt(q.innerText) + 1;
+  updateCart();
+}
+
+function dec(item){
+  let q = document.getElementById("qty-" + item);
+  let v = parseInt(q.innerText);
+  if(v > 1){
+    q.innerText = v - 1;
+  }
+  updateCart();
+}
+
+document.querySelectorAll("input").forEach(i=>{
+  i.addEventListener("change", updateCart);
+});
+
+function updateCart(){
+  let cart = document.getElementById("cartItems");
+  cart.innerHTML = "";
+  let total = 0;
+
+  document.querySelectorAll(".main-item").forEach(item=>{
+    if(item.checked){
+      let name = item.dataset.name;
+      let price = parseFloat(item.dataset.price);
+      let qty = parseInt(document.getElementById("qty-" + name).innerText);
+      total += price * qty;
+
+      let addons = [];
+
+      document.querySelectorAll(".ingredient").forEach(a=>{
+        if(a.checked && a.dataset.item === name){
+          addons.push(a.dataset.name);
+        }
+      });
+
+      document.querySelectorAll(".addon-paid").forEach(a=>{
+        if(a.checked && a.dataset.item === name){
+          addons.push(a.dataset.name + " +RM1.50");
+          total += parseFloat(a.dataset.price);
+        }
+      });
+
+      let div = document.createElement("div");
+      div.innerText = name + " x" + qty +
+        (addons.length ? " (" + addons.join(", ") + ")" : "") +
+        " RM" + (price * qty).toFixed(2);
+
+      cart.appendChild(div);
+    }
+  });
+
+  document.getElementById("totalPrice").innerText = total.toFixed(2);
+}
+
+function sendOrder() {
+  let items = [];
+  let total = 0;
+
+  document.querySelectorAll(".main-item:checked").forEach(item => {
+    let name = item.dataset.name;
+    let price = parseFloat(item.dataset.price);
+    let qty = parseInt(document.getElementById("qty-" + name).innerText);
+
+    let addons = [];
+    document.querySelectorAll(".addon-" + name + ":checked").forEach(a => {
+      addons.push(a.dataset.name);
+      total += parseFloat(a.dataset.price || 0);
+    });
+
+    total += price * qty;
+
+    items.push({
+      name: name,
+      qty: qty,
+      addons: addons,
+      price: (price * qty).toFixed(2)
+    });
+  });
+
+ fetch("https://script.google.com/macros/s/AKfycbzPy0ktjYXp_xxsCIasUdhoafMykN3reqCGbImw5h_65H2ohkQSuiOWoVej2-3Ap0Pf/exec", {
+  method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    table: tableNo,
+    items: items,
+    totalPrice: total.toFixed(2)
+  })
+})
+.then(() => {
+  alert("Order sent successfully!");
+})
+.catch(err => {
+  alert("Error Sending Order!");
+  console.error(err);
+});
+}
+</script>
+
+
+</body>
+</html>
