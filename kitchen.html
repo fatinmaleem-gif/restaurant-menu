@@ -43,7 +43,7 @@ const SHEET_API =
 
 function loadOrders(){
 
-fetch(https://script.google.com/macros/s/AKfycby4sjmDaJfAZu0h7PwZsG9B6-0qtXG2dXMy0c7ZPl3VGBpHU9cTdVZGgEgFQO65OVho/exec)
+fetch(SHEET_API)
 .then(res=>res.json())
 .then(data=>{
 
@@ -95,7 +95,8 @@ status:status
 
 }
 
-loadOrders();
+loadOrders(fetch(https://script.google.com/macros/s/AKfycby4sjmDaJfAZu0h7PwZsG9B6-0qtXG2dXMy0c7ZPl3VGBpHU9cTdVZGgEgFQO65OVho/exec)
+);
 
 /* AUTO REFRESH */
 setInterval(loadOrders,5000);
