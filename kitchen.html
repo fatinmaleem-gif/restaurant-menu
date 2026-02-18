@@ -50,11 +50,11 @@ fetch(SHEET_API)
 let container=document.getElementById("orders");
 container.innerHTML="";
 
-data.reverse().forEach(order=>{
+(data || []).reverse().forEach(order=>{
 
 let div=document.createElement("div");
 
-let statusClass = order.status.toLowerCase();
+let statusClass = (order.status || "Pending").toLowerCase();
 
 div.className="order "+statusClass;
 
