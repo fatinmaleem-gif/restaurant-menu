@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kitchen Screen</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#111;
+  color:white;
+  padding:20px;
+}
+
+.order{
+  background:#222;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+}
+
+.pending{border-left:8px solid yellow;}
+.preparing{border-left:8px solid blue;}
+.done{border-left:8px solid green;}
+
+select{
+  font-size:16px;
+  padding:5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🍜 Kitchen Orders</h1>
+
+<div id="orders"></div>
+
+<script>
+
+const SHEET_API =
+"https://script.google.com/macros/s/YOUR_WEB_APP_URL/exec";
+
+function loadOrders(){
+
+fetch(SHEET_API)
+.then(res=>res.json())
+.then(data=>{
+
+let container=document.getElementById("orders");
+container.innerHTML="";
+
+data.reverse().forEach(order=>{
+
+let div=document.createElement("div");
+
+let statusClass = order.status.toLowerCase();
+
+div.className="order "+statusClass;
+
+div.innerHTML=`
+<h3>Table ${order.table}</h3>
+<p>${order.items}</p>
+<b>RM ${order.total}</b><br><br>
+
+<select onchange="updateStatus('${order.id}',this.value)">
+<option ${order.status=="Pending"?"selected":""}>Pending</option>
+<option ${order.status=="Preparing"?"selected":""}>Preparing</option>
+<option ${order.status=="Done"?"selected":""}>Done</option>
+<option ${order.status=="Cancel"?"selected":""}>Cancel</option>
+</select>
+`;
+
+container.appendChild(div);
+
+});
+
+});
+
+}
+
+function updateStatus(id,status){
+
+fetch(SHEET_API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+action:"updateStatus",
+id:id,
+status:status
+})
+});
+
+}
+
+loadOrders();
+
+/* AUTO REFRESH */
+setInterval(loadOrders,5000);
+
+</script>
+
+</body>
+</html>
