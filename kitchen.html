@@ -46,61 +46,49 @@ fetch(SHEET_API + "?t=" + new Date().getTime(), {
   method: "GET",
   mode: "cors"
 })
-.then(res=>res.json())
-.then(data=>{
 
-let container=document.getElementById("orders");
-container.innerHTML="";
+.then(res => res.text())
+.then(text => {
 
-(data || []).reverse().forEach(order=>{
+  let data = JSON.parse(text);
 
-let div=document.createElement("div");
+  let container = document.getElementById("orders");
+  container.innerHTML = "";
 
-let statusClass = (order.status || "Pending").toLowerCase();
+  if(!data || data.length === 0){
+    container.innerHTML = "<h3>No Orders Yet</h3>";
+    return;
+  }
 
-div.className="order "+statusClass;
+  data.reverse().forEach(order => {
 
-div.innerHTML=`
-<h3>Table ${order.table}</h3>
-<p>${order.items}</p>
-<b>RM ${order.total}</b><br><br>
+    let card = document.createElement("div");
+    card.className = "order-card";
 
-<select onchange="updateStatus('${order.id}',this.value)">
-<option ${order.status=="Pending"?"selected":""}>Pending</option>
-<option ${order.status=="Preparing"?"selected":""}>Preparing</option>
-<option ${order.status=="Done"?"selected":""}>Done</option>
-<option ${order.status=="Cancel"?"selected":""}>Cancel</option>
-</select>
-`;
+    card.innerHTML = `
+      <h2>Table ${order.table}</h2>
+      <p>${order.items}</p>
+      <h3>RM ${order.total}</h3>
+      <p>Status: ${order.status}</p>
+      <hr>
+    `;
 
-container.appendChild(div);
+    container.appendChild(card);
+  });
 
-});
-
-});
-
-}
-
-function updateStatus(id,status){
-
-fetch(SHEET_API,{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-action:"updateStatus",
-id:id,
-status:status
 })
+.catch(err=>{
+  console.error("LOAD ERROR:", err);
 });
 
 }
 
+// auto refresh every 5 seconds
+setInterval(loadOrders, 5000);
+
+// first load
 loadOrders();
 
-/* AUTO REFRESH */
-setInterval(loadOrders,5000);
 
 </script>
 
