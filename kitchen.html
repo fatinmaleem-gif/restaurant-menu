@@ -42,7 +42,10 @@ const SHEET_API = "https://script.google.com/macros/s/AKfycby4sjmDaJfAZu0h7PwZsG
 
 function loadOrders(){
 
-fetch(SHEET_API)
+fetch(SHEET_API + "?t=" + new Date().getTime(), {
+  method: "GET",
+  mode: "cors"
+})
 .then(res=>res.json())
 .then(data=>{
 
