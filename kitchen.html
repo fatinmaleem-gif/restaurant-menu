@@ -71,6 +71,15 @@ fetch(SHEET_API + "?t=" + new Date().getTime(), {
       <p>${order.items}</p>
       <h3>RM ${order.total}</h3>
       <p>Status: ${order.status}</p>
+      <p>Status:</p>
+
+<select onchange="updateStatus('${order.id}',this.value)">
+<option ${order.status=="Pending"?"selected":""}>Pending</option>
+<option ${order.status=="Preparing"?"selected":""}>Preparing</option>
+<option ${order.status=="Done"?"selected":""}>Done</option>
+<option ${order.status=="Cancel"?"selected":""}>Cancel</option>
+</select>
+
       <hr>
     `;
 
