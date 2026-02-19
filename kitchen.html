@@ -17,6 +17,7 @@ body{
   padding:15px;
   margin:10px 0;
   border-radius:10px;
+  transition:0.3s;
 }
 
 .pending{border-left:8px solid yellow;}
@@ -64,14 +65,34 @@ fetch(SHEET_API + "?t=" + new Date().getTime(), {
   data.reverse().forEach(order => {
 
     let card = document.createElement("div");
-    card.className = "order-card";
+
+   let statusClass = "";
+
+if(order.status == "Pending"){
+  statusClass = "pending";
+}
+else if(order.status == "Preparing"){
+  statusClass = "preparing";
+}
+else if(order.status == "Done"){
+  statusClass = "done";
+}
+else if(order.status == "Cancel"){
+  statusClass = "cancel";
+}
+
+card.className = "order " + statusClass;
 
     card.innerHTML = `
       <h2>Table ${order.table}</h2>
       <p>${order.items}</p>
       <h3>RM ${order.total}</h3>
       <p>Status: ${order.status}</p>
-      <p>Status:</p>
+      <p class="status ${statusClass}">
+  Status: ${order.status}
+</p>
+
+<p>Status:</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
