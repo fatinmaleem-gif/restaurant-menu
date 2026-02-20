@@ -114,6 +114,23 @@ card.className = "order " + statusClass;
 
 }
 
+ function updateStatus(id, status){
+
+  fetch(SHEET_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+      action: "updateStatus",
+      id: id,
+      status: status
+    })
+  })
+  .then(()=>console.log("Status sent"))
+  .catch(err=>console.error(err));
+}
+
 // auto refresh every 5 seconds
 setInterval(loadOrders, 5000);
 
