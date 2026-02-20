@@ -102,6 +102,8 @@ card.className = "order " + statusClass;
 </select>
 
       <hr>
+  <br><br>
+<button onclick="printOrder(this)">🖨️ Print</button>
     `;
 
     container.appendChild(card);
@@ -137,7 +139,55 @@ setInterval(loadOrders, 5000);
 // first load
 loadOrders();
 
+function printOrder(btn){
 
+  let card = btn.parentElement;
+
+  let table = card.querySelector("h2").innerText;
+  let items = card.querySelector("p").innerText;
+  let total = card.querySelector("h3").innerText;
+
+  let printWindow = window.open("", "", "width=300,height=600");
+
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>Kitchen Ticket</title>
+      <style>
+        body{
+          font-family: monospace;
+          width:80mm;
+          font-size:16px;
+        }
+        h2,h3{margin:5px 0;}
+        hr{border-top:1px dashed black;}
+      </style>
+    </head>
+    <body>
+
+      <center>
+        <h2>${table}</h2>
+      </center>
+
+      <hr>
+
+      <p>${items}</p>
+
+      <hr>
+
+      <h3>${total}</h3>
+
+      <br><br>
+      ${new Date().toLocaleString()}
+
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
 </script>
 
 </body>
