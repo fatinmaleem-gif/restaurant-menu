@@ -84,15 +84,16 @@ else if(order.status == "Cancel"){
 card.className = "order " + statusClass;
 
     card.innerHTML = `
-      <h2>Table ${order.table}</h2>
-      <p>${order.items}</p>
-      <h3>RM ${order.total}</h3>
-      <p>Status: ${order.status}</p>
-      <p class="status ${statusClass}">
+<br><br>
+<button onclick="printOrder(this)">🖨️ Print</button>
+
+<h2>Table ${order.table}</h2>
+<p>${order.items}</p>
+<h3>RM ${order.total}</h3>
+
+<p class="status ${statusClass}">
   Status: ${order.status}
 </p>
-
-<p>Status:</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
@@ -101,10 +102,8 @@ card.className = "order " + statusClass;
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
 
-      <hr>
-  <br><br>
-<button onclick="printOrder(this)">🖨️ Print</button>
-    `;
+<hr>
+`;
 
     container.appendChild(card);
   });
