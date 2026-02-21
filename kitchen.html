@@ -139,6 +139,7 @@ setInterval(loadOrders, 5000);
 // first load
 loadOrders();
   
+<script>
 function printOrder(btn){
 
   let orderCard = btn.parentElement;
@@ -191,35 +192,6 @@ function printOrder(btn){
         printWindow.close();
       };
   };
-}
-</script>
-</style>
-    </head>
-    <body>
-
-      <center>
-        <h2>${table}</h2>
-      </center>
-
-      <hr>
-
-      <p>${items}</p>
-
-      <hr>
-
-      <h3>${total}</h3>
-
-      <br><br>
-      ${new Date().toLocaleString()}
-
-    </body>
-    </html>
-  `);
-
-  printWindow.document.close();
-printWindow.onafterprint = function(){
-  printWindow.close();
-};
 }
 </script>
 
