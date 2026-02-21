@@ -83,15 +83,14 @@ else if(order.status == "Cancel"){
 
 card.className = "order " + statusClass;
 
-    card.innerHTML = `
-<br><br>
+card.innerHTML = `
 <button onclick="printOrder(this)">🖨️ Print</button>
 
 <h2>Table ${order.table}</h2>
 <p>${order.items}</p>
 <h3>RM ${order.total}</h3>
 
-<p class="status ${statusClass}">
+<p class="status">
   Status: ${order.status}
 </p>
 
@@ -105,7 +104,7 @@ card.className = "order " + statusClass;
 <hr>
 `;
 
-    container.appendChild(card);
+container.appendChild(card);
   });
 
 })
