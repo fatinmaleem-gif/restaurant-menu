@@ -140,15 +140,15 @@ setInterval(loadOrders, 5000);
 // first load
 loadOrders();
 
+<script>
+
+// auto refresh every 5 seconds
+setInterval(loadOrders, 5000);
+
+// first load
+loadOrders();
+
 function printOrder(btn){
-
-  let card = btn.parentElement;
-
-  let table = card.querySelector("h2").innerText;
-  let items = card.querySelector("p").innerText;
-  let total = card.querySelector("h3").innerText;
-
-  function printOrder(btn){
 
   let orderCard = btn.closest(".order");
 
@@ -208,6 +208,7 @@ hr{
 
   printWindow.document.close();
 }
+
 </script>
 
 </body>
