@@ -41,80 +41,71 @@ select{
 
 const SHEET_API =
 "https://script.google.com/macros/s/AKfycbxiS-WwDdEI711nSCb6YYYtvYXWsjnh8W1lZ7IkuLWYdrZfSXDRpoatikcT_SUVlcrR/exec";
-
+  
 function loadOrders(){
 
-fetch(SHEET_API + "?t=" + new Date().getTime(), {
-  method: "GET",
-  mode: "cors"
-})
+fetch(SHEET_API + "?t=" + new Date().getTime())
+.then(res => res.json())
+.then(data => {
 
-.then(res => res.text())
-.then(text => {
+let container = document.getElementById("orders");
+container.innerHTML = "";
 
-  let data = JSON.parse(text);
+let grouped = {};
 
-  let container = document.getElementById("orders");
-  container.innerHTML = "";
+data.forEach(order => {
 
-  if(!data || data.length === 0){
-    container.innerHTML = "<h3>No Orders Yet</h3>";
-    return;
-  }
+let status = (order.status || "").toLowerCase();
 
-  data.reverse().forEach(order => {
+if(status === "pending" && !printedOrders.has(order.id)){
 
-    let card = document.createElement("div");
+let key = order.table; // group by table
 
-   let statusClass = "";
+if(!grouped[key]) grouped[key] = [];
 
-if(order.status == "Pending"){
-  statusClass = "pending";
-}
-else if(order.status == "Preparing"){
-  statusClass = "preparing";
-}
-else if(order.status == "Done"){
-  statusClass = "done";
-}
-else if(order.status == "Cancel"){
-  statusClass = "cancel";
+grouped[key].push(order);
+printedOrders.add(order.id);
 }
 
-card.className = "order " + statusClass;
+// ---------- DISPLAY CARD ----------
+let card = document.createElement("div");
+card.className = "order";
 
-    card.innerHTML = `
-      <h2>Table ${order.table}</h2>
-      <p>${order.items}</p>
-      <h3>RM ${order.total}</h3>
-      <p>Status: ${order.status}</p>
-      <p class="status ${statusClass}">
-  Status: ${order.status}
-</p>
+card.innerHTML = `
+<h2>Table ${order.table}</h2>
+<p>${order.items}</p>
+<h3>RM ${order.total}</h3>
+<hr>
+`;
 
-<p>Status:</p>
+container.appendChild(card);
 
-<select onchange="updateStatus('${order.id}',this.value)">
-<option ${order.status=="Pending"?"selected":""}>Pending</option>
-<option ${order.status=="Preparing"?"selected":""}>Preparing</option>
-<option ${order.status=="Done"?"selected":""}>Done</option>
-<option ${order.status=="Cancel"?"selected":""}>Cancel</option>
-</select>
-
-      <hr>
-  <br><br>
-<button onclick="printOrder(this)">🖨️ Print</button>
-    `;
-
-    container.appendChild(card);
-  });
-
-})
-.catch(err=>{
-  console.error("LOAD ERROR:", err);
 });
 
+
+// =====================
+// AUTO BATCH PRINT
+// =====================
+Object.keys(grouped).forEach(table => {
+
+let orders = grouped[table];
+
+let itemsText = "";
+let total = 0;
+
+orders.forEach(o=>{
+itemsText += o.items + "\n";
+total += Number(o.total);
+});
+
+printBatch(table, itemsText, total);
+
+});
+
+})
+.catch(err => console.error(err));
 }
+
 
  function updateStatus(id, status){
 
