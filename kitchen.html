@@ -153,34 +153,20 @@ function printOrder(btn){
   let printWindow = window.open("", "_blank", "width=300,height=600");
 
   printWindow.document.open();
-  printWindow.document.write(`
-<!DOCTYPE html>
+ printWindow.document.write(`
 <html>
 <head>
-<meta charset="UTF-8">
 <title>Kitchen Ticket</title>
 
 <style>
-@page {
-  size: 80mm auto;
-  margin: 0;
-}
+@page{ size:80mm auto; margin:0; }
 
 body{
-  font-family: monospace;
-  width:72mm;
-  margin:0;
-  padding:5mm;
-  font-size:16px;
-}
-
-h2,h3{
-  margin:4px 0;
-}
-
-hr{
-  border-top:1px dashed black;
-  margin:6px 0;
+ font-family:monospace;
+ width:72mm;
+ margin:0;
+ padding:5mm;
+ font-size:16px;
 }
 </style>
 
@@ -209,7 +195,3 @@ window.onload = function(){
 </body>
 </html>
 `);
-
-  printWindow.document.close();
-}
-</script>
