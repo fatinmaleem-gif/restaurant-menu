@@ -107,7 +107,14 @@ card.className = "order " + statusClass;
     `;
 
     container.appendChild(card);
-@@ -116,28 +118,76 @@
+  });
+
+})
+.catch(err=>{
+  console.error("LOAD ERROR:", err);
+});
+
+}
 
  function updateStatus(id, status){
 
@@ -155,6 +162,28 @@ function printOrder(btn){
         h2,h3{margin:5px 0;}
         hr{border-top:1px dashed black;}
       </style>
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  body{
+    font-family: monospace;
+    width:72mm;
+    margin:0;
+    padding:5mm;
+    font-size:16px;
+  }
+
+  h2,h3{
+    margin:4px 0;
+  }
+
+  hr{
+    border-top:1px dashed black;
+    margin:6px 0;
+  }
+</style>
     </head>
     <body>
 
@@ -177,7 +206,7 @@ function printOrder(btn){
     </html>
   `);
 
- printWindow.document.close();
+  printWindow.document.close();
   printWindow.focus();
   printWindow.print();
 printWindow.onafterprint = function(){
@@ -185,4 +214,3 @@ printWindow.onafterprint = function(){
 };
 }
 </script>
-
