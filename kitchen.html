@@ -177,8 +177,12 @@ function printOrder(btn){
     </html>
   `);
 
-  printWindow.document.close();
+ printWindow.document.close();
   printWindow.focus();
   printWindow.print();
+printWindow.onafterprint = function(){
+  printWindow.close();
+};
 }
 </script>
+
