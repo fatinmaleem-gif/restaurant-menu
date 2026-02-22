@@ -141,6 +141,7 @@ setInterval(loadOrders, 5000);
 // first load
 loadOrders();
 
+<script>
 function printOrder(btn){
 
   let orderCard = btn.closest(".order");
@@ -149,17 +150,20 @@ function printOrder(btn){
   let items = orderCard.querySelector("p")?.innerText || "";
   let total = orderCard.querySelector("b")?.innerText || "";
 
-  let printWindow = window.open("", "", "width=300,height=600");
+  let printWindow = window.open("", "_blank", "width=300,height=600");
 
+  printWindow.document.open();
   printWindow.document.write(`
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>Kitchen Ticket</title>
 
 <style>
-@page{
-  size:80mm auto;
-  margin:0;
+@page {
+  size: 80mm auto;
+  margin: 0;
 }
 
 body{
@@ -182,7 +186,7 @@ hr{
 
 </head>
 
-<body onload="window.print();setTimeout(()=>window.close(),500);">
+<body>
 
 <center><b>KITCHEN ORDER</b></center>
 <hr>
@@ -195,13 +199,19 @@ hr{
 
 <hr>
 
+<script>
+window.onload = function(){
+  window.print();
+  setTimeout(()=>window.close(),500);
+}
+<\/script>
+
 </body>
 </html>
 `);
 
   printWindow.document.close();
 }
-
 </script>
 
 </body>
