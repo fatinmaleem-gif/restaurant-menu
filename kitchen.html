@@ -40,39 +40,59 @@ select{
 <script>
 
 const SHEET_API =
-"https://script.google.com/macros/s/AKfycby4sjmDaJfAZu0h7PwZsG9B6-0qtXG2dXMy0c7ZPl3VGBpHU9cTdVZGgEgFQO65OVho/exec";
+"https://script.google.com/macros/s/AKfycbxiS-WwDdEI711nSCb6YYYtvYXWsjnh8W1lZ7IkuLWYdrZfSXDRpoatikcT_SUVlcrR/exec";
 
-
-// =======================
-// LOAD ORDERS
-// =======================
 function loadOrders(){
 
-fetch(SHEET_API + "?t=" + new Date().getTime())
-.then(res => res.json())
-.then(data => {
+fetch(SHEET_API + "?t=" + new Date().getTime(), {
+  method: "GET",
+  mode: "cors"
+})
 
-let container = document.getElementById("orders");
-container.innerHTML = "";
+.then(res => res.text())
+.then(text => {
 
-data.reverse().forEach(order => {
+  let data = JSON.parse(text);
 
-let card = document.createElement("div");
+  let container = document.getElementById("orders");
+  container.innerHTML = "";
 
-let statusClass = (order.status || "Pending").toLowerCase();
+  if(!data || data.length === 0){
+    container.innerHTML = "<h3>No Orders Yet</h3>";
+    return;
+  }
+
+  data.reverse().forEach(order => {
+
+    let card = document.createElement("div");
+
+   let statusClass = "";
+
+if(order.status == "Pending"){
+  statusClass = "pending";
+}
+else if(order.status == "Preparing"){
+  statusClass = "preparing";
+}
+else if(order.status == "Done"){
+  statusClass = "done";
+}
+else if(order.status == "Cancel"){
+  statusClass = "cancel";
+}
 
 card.className = "order " + statusClass;
 
-card.innerHTML = `
-<button onclick="printOrder(this)">🖨️ Print</button>
-
-<h2>Table ${order.table}</h2>
-<p class="items">${order.items}</p>
-<h3>RM ${order.total}</h3>
-
-<p class="status">
-Status: ${order.status}
+    card.innerHTML = `
+      <h2>Table ${order.table}</h2>
+      <p>${order.items}</p>
+      <h3>RM ${order.total}</h3>
+      <p>Status: ${order.status}</p>
+      <p class="status ${statusClass}">
+  Status: ${order.status}
 </p>
+
+<p>Status:</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
@@ -81,110 +101,86 @@ Status: ${order.status}
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
 
-<hr>
-`;
+      <hr>
+  <br><br>
+<button onclick="printOrder(this)">🖨️ Print</button>
+    `;
 
-container.appendChild(card);
+    container.appendChild(card);
+@@ -116,28 +118,76 @@
 
-});
+ function updateStatus(id, status){
 
-})
-.catch(err => console.error("LOAD ERROR:", err));
-
+  fetch(SHEET_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+      action: "updateStatus",
+      id: id,
+      status: status
+    })
+  })
+  .then(()=>console.log("Status sent"))
+  .catch(err=>console.error(err));
 }
 
-
-// =======================
-// UPDATE STATUS
-// =======================
-function updateStatus(id, status){
-
-fetch(SHEET_API,{
-method:"POST",
-headers:{
-"Content-Type":"text/plain;charset=utf-8"
-},
-body: JSON.stringify({
-action:"updateStatus",
-id:id,
-status:status
-})
-})
-.then(()=>console.log("Status Updated"))
-.catch(err=>console.error(err));
-
-}
-
-
-// =======================
-// PRINT ORDER
-// =======================
-function printOrder(btn){
-
-let card = btn.closest(".order");
-
-let table = card.querySelector("h2").innerText;
-let items = card.querySelector(".items").innerText;
-let total = card.querySelector("h3").innerText;
-
-let printWindow = window.open("", "", "width=300,height=600");
-
-printWindow.document.write(`
-<html>
-<head>
-<title>Kitchen Ticket</title>
-
-<style>
-@page{
-  size:80mm auto;
-  margin:0;
-}
-
-body{
-  font-family: monospace;
-  width:72mm;
-  margin:0;
-  padding:5mm;
-  font-size:16px;
-}
-
-h2,h3{
-  margin:4px 0;
-}
-
-hr{
-  border-top:1px dashed black;
-  margin:6px 0;
-}
-</style>
-
-</head>
-
-<body onload="window.print();setTimeout(()=>window.close(),500);">
-
-<center><b>KITCHEN ORDER</b></center>
-<hr>
-
-<h2>${table}</h2>
-<p>${items}</p>
-<h3>${total}</h3>
-
-<p>${new Date().toLocaleString()}</p>
-
-<hr>
-
-</body>
-</html>
-`);
-
-printWindow.document.close();
-}
-
-
-// =======================
-// AUTO REFRESH
-// =======================
-loadOrders();
+// auto refresh every 5 seconds
 setInterval(loadOrders, 5000);
 
+// first load
+loadOrders();
+
+function printOrder(btn){
+
+  let card = btn.parentElement;
+
+  let table = card.querySelector("h2").innerText;
+  let items = card.querySelector("p").innerText;
+  let total = card.querySelector("h3").innerText;
+
+  let printWindow = window.open("", "", "width=300,height=600");
+
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>Kitchen Ticket</title>
+      <style>
+        body{
+          font-family: monospace;
+          width:80mm;
+          font-size:16px;
+        }
+        h2,h3{margin:5px 0;}
+        hr{border-top:1px dashed black;}
+      </style>
+    </head>
+    <body>
+
+      <center>
+        <h2>${table}</h2>
+      </center>
+
+      <hr>
+
+      <p>${items}</p>
+
+      <hr>
+
+      <h3>${total}</h3>
+
+      <br><br>
+      ${new Date().toLocaleString()}
+
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
 </script>
+
+</body>
