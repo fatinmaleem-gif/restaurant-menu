@@ -40,59 +40,39 @@ select{
 <script>
 
 const SHEET_API =
-"https://script.google.com/macros/s/AKfycbxiS-WwDdEI711nSCb6YYYtvYXWsjnh8W1lZ7IkuLWYdrZfSXDRpoatikcT_SUVlcrR/exec";
+"https://script.google.com/macros/s/AKfycby4sjmDaJfAZu0h7PwZsG9B6-0qtXG2dXMy0c7ZPl3VGBpHU9cTdVZGgEgFQO65OVho/exec";
 
+
+// =======================
+// LOAD ORDERS
+// =======================
 function loadOrders(){
 
-fetch(SHEET_API + "?t=" + new Date().getTime(), {
-  method: "GET",
-  mode: "cors"
-})
+fetch(SHEET_API + "?t=" + new Date().getTime())
+.then(res => res.json())
+.then(data => {
 
-.then(res => res.text())
-.then(text => {
+let container = document.getElementById("orders");
+container.innerHTML = "";
 
-  let data = JSON.parse(text);
+data.reverse().forEach(order => {
 
-  let container = document.getElementById("orders");
-  container.innerHTML = "";
+let card = document.createElement("div");
 
-  if(!data || data.length === 0){
-    container.innerHTML = "<h3>No Orders Yet</h3>";
-    return;
-  }
-
-  data.reverse().forEach(order => {
-
-    let card = document.createElement("div");
-
-   let statusClass = "";
-
-if(order.status == "Pending"){
-  statusClass = "pending";
-}
-else if(order.status == "Preparing"){
-  statusClass = "preparing";
-}
-else if(order.status == "Done"){
-  statusClass = "done";
-}
-else if(order.status == "Cancel"){
-  statusClass = "cancel";
-}
+let statusClass = (order.status || "pending").toLowerCase();
 
 card.className = "order " + statusClass;
 
-    card.innerHTML = `
-      <h2>Table ${order.table}</h2>
-      <p>${order.items}</p>
-      <h3>RM ${order.total}</h3>
-      <p>Status: ${order.status}</p>
-      <p class="status ${statusClass}">
-  Status: ${order.status}
-</p>
+card.innerHTML = `
+<button onclick="printOrder(this)">🖨️ Print</button>
 
-<p>Status:</p>
+<h2>Table ${order.table}</h2>
+<p>${order.items}</p>
+<h3>RM ${order.total}</h3>
+
+<p class="status">
+Status: ${order.status}
+</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
@@ -101,77 +81,85 @@ card.className = "order " + statusClass;
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
 
-      <hr>
-  <br><br>
-<button onclick="printOrder(this)">🖨️ Print</button>
-    `;
+<hr>
+`;
 
-    container.appendChild(card);
-  });
+container.appendChild(card);
 
-})
-.catch(err=>{
-  console.error("LOAD ERROR:", err);
 });
 
+})
+.catch(err => console.error("LOAD ERROR:", err));
 }
 
- function updateStatus(id, status){
 
-  fetch(SHEET_API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify({
-      action: "updateStatus",
-      id: id,
-      status: status
-    })
-  })
-  .then(()=>console.log("Status sent"))
-  .catch(err=>console.error(err));
+// =======================
+// UPDATE STATUS
+// =======================
+function updateStatus(id, status){
+
+fetch(SHEET_API,{
+method:"POST",
+headers:{
+"Content-Type":"text/plain;charset=utf-8"
+},
+body: JSON.stringify({
+action:"updateStatus",
+id:id,
+status:status
+})
+})
+.then(()=>console.log("Status Updated"))
+.catch(err=>console.error(err));
+
 }
 
-<script>
 
-// auto refresh every 5 seconds
-setInterval(loadOrders, 5000);
-
-// first load
-loadOrders();
-
-<script>
+// =======================
+// PRINT ORDER
+// =======================
 function printOrder(btn){
 
-  let orderCard = btn.closest(".order");
+let card = btn.closest(".order");
 
-  let table = orderCard.querySelector("h3")?.innerText || "";
-  let items = orderCard.querySelector("p")?.innerText || "";
-  let total = orderCard.querySelector("b")?.innerText || "";
+let table = card.querySelector("h2").innerText;
+let items = card.querySelector("p").innerText;
+let total = card.querySelector("h3").innerText;
 
-  let printWindow = window.open("", "_blank", "width=300,height=600");
+let printWindow = window.open("", "", "width=300,height=600");
 
- printWindow.document.write(`
+printWindow.document.write(`
 <html>
 <head>
 <title>Kitchen Ticket</title>
 
 <style>
-@page{ size:80mm auto; margin:0; }
+@page{
+  size:80mm auto;
+  margin:0;
+}
 
 body{
- font-family:monospace;
- width:72mm;
- margin:0;
- padding:5mm;
- font-size:16px;
+  font-family: monospace;
+  width:72mm;
+  margin:0;
+  padding:5mm;
+  font-size:16px;
+}
+
+h2,h3{
+  margin:4px 0;
+}
+
+hr{
+  border-top:1px dashed black;
+  margin:6px 0;
 }
 </style>
 
 </head>
 
-<body>
+<body onload="window.print();setTimeout(()=>window.close(),500);">
 
 <center><b>KITCHEN ORDER</b></center>
 <hr>
@@ -184,13 +172,21 @@ body{
 
 <hr>
 
-<script>
-window.onload = function(){
-  window.print();
-  setTimeout(()=>window.close(),500);
-}
-<\/script>
+</body>
+</html>
+`);
 
+printWindow.document.close();
+}
+
+
+// =======================
+// AUTO REFRESH
+// =======================
+loadOrders();
+setInterval(loadOrders, 5000);
+
+</script>
 </body>
 </html>
 `);
