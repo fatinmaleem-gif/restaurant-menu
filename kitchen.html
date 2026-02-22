@@ -182,46 +182,5 @@ function printOrder(btn){
       };
   };
 }
-function printBatch(table, items, total){
-
-let printWindow = window.open("", "", "width=300,height=600");
-
-printWindow.document.write(`
-<html>
-<head>
-<style>
-@page{ size:80mm auto; margin:0; }
-
-body{
-font-family: monospace;
-width:72mm;
-padding:5mm;
-font-size:16px;
-white-space:pre-line;
-}
-</style>
-</head>
-
-<body onload="window.print();setTimeout(()=>window.close(),500);">
-
-<center><b>KITCHEN ORDER</b></center>
-<hr>
-
-<h2>Table ${table}</h2>
-
-<p>${items}</p>
-
-<h3>RM ${total.toFixed(2)}</h3>
-
-<p>${new Date().toLocaleString()}</p>
-
-<hr>
-
-</body>
-</html>
-`);
-
-printWindow.document.close();
-}
 </script>
 
