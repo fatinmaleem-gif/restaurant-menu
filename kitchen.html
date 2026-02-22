@@ -131,56 +131,48 @@ setInterval(loadOrders, 5000);
 loadOrders();
 function printOrder(btn){
 
-  let orderCard = btn.parentElement;
+  let orderCard = btn.closest(".order");
 
   let printWindow = window.open("", "", "width=300,height=600");
 
   printWindow.document.write(`
-    <html>
-    <head>
-      <title>Kitchen Ticket</title>
+  <html>
+  <head>
+    <title>Kitchen Ticket</title>
 
-      <style>
-        @page {
-          size: 80mm auto;
-          margin: 0;
-        }
+    <style>
+      @page { size:80mm auto; margin:0; }
 
-        body{
-          font-family: monospace;
-          width:72mm;
-          margin:0;
-          padding:5mm;
-          font-size:16px;
-        }
+      body{
+        font-family: monospace;
+        width:72mm;
+        padding:5mm;
+        font-size:16px;
+      }
 
-        button, select{
-          display:none;
-        }
+      button, select{
+        display:none;
+      }
 
-        hr{
-          border-top:1px dashed black;
-        }
-      </style>
-    </head>
+      hr{
+        border-top:1px dashed black;
+      }
+    </style>
+  </head>
 
-    <body>
-      ${orderCard.innerHTML}
-    </body>
-    </html>
+  <body>
+    ${orderCard.innerHTML}
+  </body>
+  </html>
   `);
 
   printWindow.document.close();
 
-  /* ✅ PRINT ONLY AFTER LOAD */
   printWindow.onload = function(){
-      printWindow.focus();
-      printWindow.print();
-
-      printWindow.onafterprint = function(){
-        printWindow.close();
-      };
+    printWindow.print();
+    printWindow.onafterprint = () => printWindow.close();
   };
 }
+
 </script>
 
