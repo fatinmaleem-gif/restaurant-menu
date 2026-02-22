@@ -59,7 +59,7 @@ data.reverse().forEach(order => {
 
 let card = document.createElement("div");
 
-let statusClass = (order.status || "pending").toLowerCase();
+let statusClass = (order.status || "Pending").toLowerCase();
 
 card.className = "order " + statusClass;
 
@@ -67,7 +67,7 @@ card.innerHTML = `
 <button onclick="printOrder(this)">🖨️ Print</button>
 
 <h2>Table ${order.table}</h2>
-<p>${order.items}</p>
+<p class="items">${order.items}</p>
 <h3>RM ${order.total}</h3>
 
 <p class="status">
@@ -90,6 +90,7 @@ container.appendChild(card);
 
 })
 .catch(err => console.error("LOAD ERROR:", err));
+
 }
 
 
@@ -123,7 +124,7 @@ function printOrder(btn){
 let card = btn.closest(".order");
 
 let table = card.querySelector("h2").innerText;
-let items = card.querySelector("p").innerText;
+let items = card.querySelector(".items").innerText;
 let total = card.querySelector("h3").innerText;
 
 let printWindow = window.open("", "", "width=300,height=600");
@@ -187,5 +188,3 @@ loadOrders();
 setInterval(loadOrders, 5000);
 
 </script>
-</body>
-</html>
