@@ -17,16 +17,16 @@ body{
   padding:15px;
   margin:10px 0;
   border-radius:10px;
-  transition:0.3s;
 }
 
 .pending{border-left:8px solid yellow;}
 .preparing{border-left:8px solid blue;}
 .done{border-left:8px solid green;}
+.cancel{border-left:8px solid red;}
 
-select{
-  font-size:16px;
-  padding:5px;
+button{
+  padding:6px 10px;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -46,26 +46,26 @@ const SHEET_API =
 // ================= LOAD ORDERS =================
 function loadOrders(){
 
-fetch(SHEET_API + "?t=" + new Date().getTime())
+fetch(SHEET_API + "?t=" + Date.now())
 .then(res => res.json())
 .then(data => {
 
-let container = document.getElementById("orders");
+const container = document.getElementById("orders");
 container.innerHTML = "";
 
 if(!data || data.length === 0){
-  container.innerHTML = "<h3>No Orders Yet</h3>";
+  container.innerHTML="<h3>No Orders Yet</h3>";
   return;
 }
 
 data.reverse().forEach(order => {
 
-let statusClass = (order.status || "Pending").toLowerCase();
+const statusClass = (order.status || "Pending").toLowerCase();
 
-let card = document.createElement("div");
-card.className = "order " + statusClass;
+const card=document.createElement("div");
+card.className="order "+statusClass;
 
-card.innerHTML = `
+card.innerHTML=`
 <h2>Table ${order.table}</h2>
 <p>${order.items}</p>
 <h3>RM ${order.total}</h3>
@@ -79,8 +79,7 @@ card.innerHTML = `
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
 
-<hr>
-
+<br>
 <button onclick="printOrder(this)">🖨️ Print</button>
 `;
 
@@ -89,19 +88,19 @@ container.appendChild(card);
 });
 
 })
-.catch(err => console.error("LOAD ERROR:", err));
+.catch(err=>console.error("LOAD ERROR:",err));
 }
 
 
 // ================= UPDATE STATUS =================
-function updateStatus(id, status){
+function updateStatus(id,status){
 
 fetch(SHEET_API,{
 method:"POST",
 headers:{
 "Content-Type":"text/plain;charset=utf-8"
 },
-body: JSON.stringify({
+body:JSON.stringify({
 action:"updateStatus",
 id:id,
 status:status
@@ -114,36 +113,27 @@ status:status
 // ================= PRINT =================
 function printOrder(btn){
 
-let card = btn.closest(".order");
+const card=btn.closest(".order");
 
-let table = card.querySelector("h2").innerText;
-let items = card.querySelector("p").innerText;
-let total = card.querySelector("h3").innerText;
+const table=card.querySelector("h2").innerText;
+const items=card.querySelector("p").innerText;
+const total=card.querySelector("h3").innerText;
 
-let printWindow = window.open("", "", "width=300,height=600");
+const w=window.open("","","width=300,height=600");
 
-printWindow.document.write(`
+w.document.write(`
 <html>
 <head>
-<title>Kitchen Ticket</title>
-
 <style>
-@page{ size:80mm auto; margin:0; }
+@page{size:80mm auto;margin:0;}
 
 body{
 font-family:monospace;
 width:72mm;
-margin:0;
 padding:5mm;
 font-size:16px;
 }
-
-h2,h3{ margin:4px 0; }
-
-hr{
-border-top:1px dashed black;
-margin:6px 0;
-}
+hr{border-top:1px dashed black;}
 </style>
 </head>
 
@@ -164,12 +154,15 @@ margin:6px 0;
 </html>
 `);
 
-printWindow.document.close();
+w.document.close();
 }
 
 
 // ================= AUTO REFRESH =================
 loadOrders();
-setInterval(loadOrders, 5000);
+setInterval(loadOrders,5000);
 
 </script>
+
+</body>
+</html>
