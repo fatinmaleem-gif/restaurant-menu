@@ -113,54 +113,27 @@ status:status
 // ================= PRINT =================
 function printOrder(btn){
 
-const card=btn.closest(".order");
+  let card = btn.closest(".order");
 
-const table=card.querySelector("h2").innerText;
-const items=card.querySelector("p").innerText;
-const total=card.querySelector("h3").innerText;
+  let table = card.querySelector("h2").innerText;
+  let items = card.querySelector("p").innerText;
+  let total = card.querySelector("h3").innerText;
 
-const w=window.open("","","width=300,height=600");
+  let printWindow = window.open("", "", "width=300,height=600");
 
-w.document.write(`
-<html>
-<head>
-<style>
-@page{size:80mm auto;margin:0;}
+  printWindow.document.write(`
+    <body onload="window.print();setTimeout(()=>window.close(),500);">
+      <h2>${table}</h2>
+      <p>${items}</p>
+      <h3>${total}</h3>
+    </body>
+  `);
 
-body{
-font-family:monospace;
-width:72mm;
-padding:5mm;
-font-size:16px;
-}
-hr{border-top:1px dashed black;}
-</style>
-</head>
-
-<body onload="window.print();setTimeout(()=>window.close(),500);">
-
-<center><b>KITCHEN ORDER</b></center>
-<hr>
-
-<h2>${table}</h2>
-<p>${items}</p>
-<h3>${total}</h3>
-
-<p>${new Date().toLocaleString()}</p>
-
-<hr>
-
-</body>
-</html>
-`);
-
-w.document.close();
+  printWindow.document.close();
 }
 
-
-// ================= AUTO REFRESH =================
 loadOrders();
-setInterval(loadOrders,5000);
+setInterval(loadOrders, 5000);
 
 </script>
 
