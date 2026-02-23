@@ -84,15 +84,13 @@ else if(order.status == "Cancel"){
 card.className = "order " + statusClass;
 
     card.innerHTML = `
-      <h2>Table ${order.table}</h2>
-      <p>${order.items}</p>
-      <h3>RM ${order.total}</h3>
-      <p>Status: ${order.status}</p>
-      <p class="status ${statusClass}">
-  Status: ${order.status}
-</p>
+<h2>Table ${order.table}</h2>
+<p>${order.items}</p>
+<h3>RM ${order.total}</h3>
 
-<p>Status:</p>
+<p class="status ${statusClass}">
+Status: ${order.status}
+</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
@@ -101,10 +99,11 @@ card.className = "order " + statusClass;
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
 
-      <hr>
-  <br><br>
+<br><br>
 <button onclick="printOrder(this)">🖨️ Print</button>
-    `;
+
+<hr>
+`;
 
     container.appendChild(card);
   });
@@ -133,7 +132,11 @@ card.className = "order " + statusClass;
 }
 function printOrder(btn){
 
-  let orderCard = btn.closest(".order");
+  let card = btn.closest(".order");
+
+  let table = card.querySelector("h2").innerText;
+  let items = card.querySelector("p").innerText;
+  let total = card.querySelector("h3").innerText;
 
   let printWindow = window.open("", "", "width=300,height=600");
 
@@ -143,35 +146,46 @@ function printOrder(btn){
     <title>Kitchen Ticket</title>
 
     <style>
-      @page { size:80mm auto; margin:0; }
+      @page{
+        size:80mm auto;
+        margin:0;
+      }
 
       body{
         font-family: monospace;
         width:72mm;
+        margin:0;
         padding:5mm;
         font-size:16px;
       }
 
-      button, select{
-        display:none;
+      h2,h3{
+        margin:4px 0;
       }
 
       hr{
         border-top:1px dashed black;
+        margin:6px 0;
       }
     </style>
   </head>
 
-  <body>
-    ${orderCard.innerHTML}
+  <body onload="window.print();setTimeout(()=>window.close(),500);">
+
+    <center><b>KITCHEN ORDER</b></center>
+    <hr>
+
+    <h2>${table}</h2>
+    <p>${items}</p>
+    <h3>${total}</h3>
+
+    <p>${new Date().toLocaleString()}</p>
+
+    <hr>
+
   </body>
   </html>
   `);
 
   printWindow.document.close();
-
-  printWindow.onload = function(){
-    printWindow.print();
-    printWindow.onafterprint = () => printWindow.close();
-  };
 }
