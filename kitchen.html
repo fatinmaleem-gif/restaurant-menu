@@ -114,7 +114,7 @@ Status: ${order.status}
 });
 
 }
- function updateStatus(id, status){
+function updateStatus(id, status){
 
   fetch(SHEET_API, {
     method: "POST",
@@ -189,7 +189,8 @@ function printOrder(btn){
 
   printWindow.document.close();
 }
-  loadOrders();
+loadOrders();
 setInterval(loadOrders, 5000);
 </script>
-  
+</body>
+</html>  
