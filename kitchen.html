@@ -137,18 +137,15 @@ container.innerHTML += "<h2>✅ Completed Orders</h2>";
 
 completedOrders.forEach(order=>{
 
-let card=document.createElement("div");
-card.className="order done";
+let tableStatus = "done";
 
-card.innerHTML=`
-<h3>Table ${order.table}</h3>
-<p>${order.items}</p>
-<p>Status: ${order.status}</p>
-`;
-
-container.appendChild(card);
-
+activeTables[table].forEach(o=>{
+  if(o.status === "Pending") tableStatus = "pending";
+  if(o.status === "Preparing") tableStatus = "preparing";
+  if(o.status === "Cancel") tableStatus = "cancel";
 });
+
+card.className = "order " + tableStatus;
 
 })
 .catch(err=>console.error("LOAD ERROR:",err));
