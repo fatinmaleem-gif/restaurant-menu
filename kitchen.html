@@ -17,16 +17,16 @@ body{
   padding:15px;
   margin:10px 0;
   border-radius:10px;
+  transition:0.3s;
 }
 
 .pending{border-left:8px solid yellow;}
 .preparing{border-left:8px solid blue;}
 .done{border-left:8px solid green;}
-.cancel{border-left:8px solid red;}
 
-button{
-  padding:6px 10px;
-  margin-top:10px;
+select{
+  font-size:16px;
+  padding:5px;
 }
 </style>
 </head>
@@ -42,35 +42,57 @@ button{
 const SHEET_API =
 "https://script.google.com/macros/s/AKfycbxiS-WwDdEI711nSCb6YYYtvYXWsjnh8W1lZ7IkuLWYdrZfSXDRpoatikcT_SUVlcrR/exec";
 
-
-// ================= LOAD ORDERS =================
 function loadOrders(){
 
-fetch(SHEET_API + "?t=" + Date.now())
-.then(res => res.json())
-.then(data => {
+fetch(SHEET_API + "?t=" + new Date().getTime(), {
+  method: "GET",
+  mode: "cors"
+})
 
-const container = document.getElementById("orders");
-container.innerHTML = "";
+.then(res => res.text())
+.then(text => {
 
-if(!data || data.length === 0){
-  container.innerHTML="<h3>No Orders Yet</h3>";
-  return;
+  let data = JSON.parse(text);
+
+  let container = document.getElementById("orders");
+  container.innerHTML = "";
+
+  if(!data || data.length === 0){
+    container.innerHTML = "<h3>No Orders Yet</h3>";
+    return;
+  }
+
+  data.reverse().forEach(order => {
+
+    let card = document.createElement("div");
+
+   let statusClass = "";
+
+if(order.status == "Pending"){
+  statusClass = "pending";
+}
+else if(order.status == "Preparing"){
+  statusClass = "preparing";
+}
+else if(order.status == "Done"){
+  statusClass = "done";
+}
+else if(order.status == "Cancel"){
+  statusClass = "cancel";
 }
 
-data.reverse().forEach(order => {
+card.className = "order " + statusClass;
 
-const statusClass = (order.status || "Pending").toLowerCase();
+    card.innerHTML = `
+      <h2>Table ${order.table}</h2>
+      <p>${order.items}</p>
+      <h3>RM ${order.total}</h3>
+      <p>Status: ${order.status}</p>
+      <p class="status ${statusClass}">
+  Status: ${order.status}
+</p>
 
-const card=document.createElement("div");
-card.className="order "+statusClass;
-
-card.innerHTML=`
-<h2>Table ${order.table}</h2>
-<p>${order.items}</p>
-<h3>RM ${order.total}</h3>
-
-<p>Status: ${order.status}</p>
+<p>Status:</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
@@ -79,63 +101,94 @@ card.innerHTML=`
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
 
-<br>
+      <hr>
+  <br><br>
 <button onclick="printOrder(this)">🖨️ Print</button>
-`;
+    `;
 
-container.appendChild(card);
-
-});
+    container.appendChild(card);
+  });
 
 })
-.catch(err=>console.error("LOAD ERROR:",err));
-}
-
-
-// ================= UPDATE STATUS =================
-function updateStatus(id,status){
-
-fetch(SHEET_API,{
-method:"POST",
-headers:{
-"Content-Type":"text/plain;charset=utf-8"
-},
-body:JSON.stringify({
-action:"updateStatus",
-id:id,
-status:status
-})
+.catch(err=>{
+  console.error("LOAD ERROR:", err);
 });
 
 }
 
+ function updateStatus(id, status){
 
-// ================= PRINT =================
-window.printOrder = function(btn){
+  fetch(SHEET_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+      action: "updateStatus",
+      id: id,
+      status: status
+    })
+  })
+  .then(()=>console.log("Status sent"))
+  .catch(err=>console.error(err));
+}
 
-  let card = btn.closest(".order");
+// auto refresh every 5 seconds
+setInterval(loadOrders, 5000);
 
-  let table = card.querySelector("h2").innerText;
-  let items = card.querySelector("p").innerText;
-  let total = card.querySelector("h3").innerText;
+// first load
+loadOrders();
+function printOrder(btn){
+
+  let orderCard = btn.parentElement;
 
   let printWindow = window.open("", "", "width=300,height=600");
 
   printWindow.document.write(`
-    <body onload="window.print();setTimeout(()=>window.close(),500);">
-      <h2>${table}</h2>
-      <p>${items}</p>
-      <h3>${total}</h3>
+    <html>
+    <head>
+      <title>Kitchen Ticket</title>
+
+      <style>
+        @page {
+          size: 80mm auto;
+          margin: 0;
+        }
+
+        body{
+          font-family: monospace;
+          width:72mm;
+          margin:0;
+          padding:5mm;
+          font-size:16px;
+        }
+
+        button, select{
+          display:none;
+        }
+
+        hr{
+          border-top:1px dashed black;
+        }
+      </style>
+    </head>
+
+    <body>
+      ${orderCard.innerHTML}
     </body>
+    </html>
   `);
 
   printWindow.document.close();
+
+  /* ✅ PRINT ONLY AFTER LOAD */
+  printWindow.onload = function(){
+      printWindow.focus();
+      printWindow.print();
+
+      printWindow.onafterprint = function(){
+        printWindow.close();
+      };
+  };
 }
-
-loadOrders();
-setInterval(loadOrders, 5000);
-
 </script>
-
-</body>
-</html>
