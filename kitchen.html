@@ -138,48 +138,27 @@ setInterval(loadOrders, 5000);
 
 // first load
 loadOrders();
-function printOrder(btn){
+// ================= PRINT =================
+window.printOrder = function(btn){
 
-  let orderCard = btn.parentElement;
+  let card = btn.closest(".order");
+
+  let table = card.querySelector("h2").innerText;
+  let items = card.querySelector("p").innerText;
+  let total = card.querySelector("h3").innerText;
 
   let printWindow = window.open("", "", "width=300,height=600");
 
   printWindow.document.write(`
-    <html>
-    <head>
-      <title>Kitchen Ticket</title>
-
-      <style>
-        @page {
-          size: 80mm auto;
-          margin: 0;
-        }
-
-        body{
-          font-family: monospace;
-          width:72mm;
-          margin:0;
-          padding:5mm;
-          font-size:16px;
-        }
-
-        button, select{
-          display:none;
-        }
-
-        hr{
-          border-top:1px dashed black;
-        }
-      </style>
-    </head>
-
-    <body>
-      ${orderCard.innerHTML}
+    <body onload="window.print();setTimeout(()=>window.close(),500);">
+      <h2>${table}</h2>
+      <p>${items}</p>
+      <h3>${total}</h3>
     </body>
-    </html>
   `);
 
   printWindow.document.close();
+}
 
   /* ✅ PRINT ONLY AFTER LOAD */
   printWindow.onload = function(){
