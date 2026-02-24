@@ -44,55 +44,65 @@ const SHEET_API =
 
 function loadOrders(){
 
-fetch(SHEET_API + "?t=" + new Date().getTime(), {
-  method: "GET",
-  mode: "cors"
-})
-
+fetch(SHEET_API + "?t=" + Date.now())
 .then(res => res.text())
 .then(text => {
 
-  let data = JSON.parse(text);
+let data = JSON.parse(text);
 
-  let container = document.getElementById("orders");
-  container.innerHTML = "";
+let container = document.getElementById("orders");
+container.innerHTML = "";
 
-  if(!data || data.length === 0){
-    container.innerHTML = "<h3>No Orders Yet</h3>";
-    return;
+if(!data || data.length === 0){
+  container.innerHTML="<h3>No Orders Yet</h3>";
+  return;
+}
+
+/* =========================
+   GROUP ORDERS
+========================= */
+
+let activeTables = {};
+let completedOrders = [];
+
+data.forEach(order => {
+
+let status = order.status || "Pending";
+
+// ACTIVE (Pending + Preparing)
+if(status === "Pending" || status === "Preparing"){
+
+  if(!activeTables[order.table]){
+    activeTables[order.table] = [];
   }
 
-  data.reverse().forEach(order => {
-
-    let card = document.createElement("div");
-
-   let statusClass = "";
-
-if(order.status == "Pending"){
-  statusClass = "pending";
+  activeTables[order.table].push(order);
 }
-else if(order.status == "Preparing"){
-  statusClass = "preparing";
-}
-else if(order.status == "Done"){
-  statusClass = "done";
-}
-else if(order.status == "Cancel"){
-  statusClass = "cancel";
+else{
+  completedOrders.push(order);
 }
 
-card.className = "order " + statusClass;
+});
 
-    card.innerHTML = `
-      <h2>Table ${order.table}</h2>
-      <p>${order.items}</p>
-      <h3>RM ${order.total}</h3>
-      <p>Status: ${order.status}</p>
-      <p class="status ${statusClass}">
-  Status: ${order.status}
-</p>
 
-<p>Status:</p>
+/* =========================
+   SHOW ACTIVE ORDERS
+========================= */
+
+container.innerHTML += "<h2>🔥 Active Orders</h2>";
+
+Object.keys(activeTables).forEach(table => {
+
+let card = document.createElement("div");
+card.className = "order pending";
+
+let itemsHTML = "";
+let total = 0;
+
+activeTables[table].forEach(order=>{
+
+itemsHTML += `
+<p>${order.items}</p>
 
 <select onchange="updateStatus('${order.id}',this.value)">
 <option ${order.status=="Pending"?"selected":""}>Pending</option>
@@ -100,20 +110,48 @@ card.className = "order " + statusClass;
 <option ${order.status=="Done"?"selected":""}>Done</option>
 <option ${order.status=="Cancel"?"selected":""}>Cancel</option>
 </select>
+<hr>
+`;
 
-      <hr>
-  <br><br>
-<button onclick="printOrder(this)">🖨️ Print</button>
-    `;
-
-    container.appendChild(card);
-  });
-
-})
-.catch(err=>{
-  console.error("LOAD ERROR:", err);
+total += Number(order.total);
 });
 
+card.innerHTML = `
+<h2>Table ${table}</h2>
+${itemsHTML}
+<h3>Total RM ${total}</h3>
+
+<button onclick="printOrder(this)">🖨️ Print Table</button>
+`;
+
+container.appendChild(card);
+
+});
+
+
+/* =========================
+   SHOW COMPLETED
+========================= */
+
+container.innerHTML += "<h2>✅ Completed Orders</h2>";
+
+completedOrders.forEach(order=>{
+
+let card=document.createElement("div");
+card.className="order done";
+
+card.innerHTML=`
+<h3>Table ${order.table}</h3>
+<p>${order.items}</p>
+<p>Status: ${order.status}</p>
+`;
+
+container.appendChild(card);
+
+});
+
+})
+.catch(err=>console.error("LOAD ERROR:",err));
 }
 
  function updateStatus(id, status){
